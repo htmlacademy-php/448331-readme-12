@@ -3,13 +3,32 @@ $is_auth = rand(0, 1);
 
 $posts_array = array(
     array('header' => 'Цитата', 'type' => 'post-quote', 'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих', 'user_name' => 'Лариса', 'avatar' => 'userpic-larisa-small.jpg'),
-    array('header' => 'Игра престолов', 'type' => 'post-text', 'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!', 'user_name' => 'Владик', 'avatar' => 'userpic.jpg'),
+    array('header' => 'Сахара', 'type' => 'post-text', 'content' => 'Сахара располагается на Сахарской плите — северо-западной части древней Африканской платформы. Вдоль центральной части плиты с запада на восток протягивается Центрально-Сахарская зона поднятий, где на поверхность выходит докембрийский кристаллический фундамент: Регибатский массив на западе отделён Танезруфтским прогибом от нагорья Ахаггар, состоящего из чередующихся горстов и грабенов. Далее к востоку простираются массивы Тибести, Эль-Увайнат, Эль-Эглаб, а также западный выступ Нубийско-Аравийского щита (хребет Этбай).', 'user_name' => 'Владик', 'avatar' => 'userpic.jpg'),
     array('header' => 'Наконец, обработал фотки!', 'type' => 'post-photo', 'content' => 'rock-medium.jpg', 'user_name' => 'Виктор', 'avatar' => 'userpic-mark.jpg'),
     array('header' => 'Моя мечта', 'type' => 'post-photo', 'content' => 'coast-medium.jpg', 'user_name' => 'Лариса', 'avatar' => 'userpic-larisa-small.jpg'),
     array('header' => 'Лучшие курсы', 'type' => 'post-link', 'content' => 'www.htmlacademy.ru', 'user_name' => 'Владик', 'avatar' => 'userpic.jpg')
 );
 
 $user_name = 'Андрей'; // укажите здесь ваше имя
+
+function post_length_reduce($string_to_cut, $string_length = 300) {
+    if (strlen($string_to_cut) <= $string_length) {
+        return '<p>'.$string_to_cut.'</p>';
+    } else {
+        $article_array = explode(" ", $string_to_cut); // разбиваем строку на массив слов
+        foreach ($article_array as $value) {
+            $sum_words += strlen($value) + 1; // +1 - учитываем так же пробелы между словами как символ
+            $i++;
+            if ($sum_words > $string_length) {
+                break;
+            } 
+        }
+        $resulted_array = array_slice($article_array, 0, $i); 
+        $resulted_string = (implode(" ", $resulted_array))."...";
+        return '<p>'.$resulted_string.'</p><a class="post-text__more-link" href="#">Читать далее</a>';
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -213,14 +232,14 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
         <div class="popular__posts">
             
             <?php foreach ($posts_array as $post_content): ?>
-            <article class="popular__post post <?=$post_content['type'] ?>">
+            <article class="popular__post post <?= $post_content['type'] ?>">
                 <header class="post__header">
                     <h2><?= $post_content['header']; ?></h2>
                 </header>
                 <div class="post__main">
                     <!--здесь содержимое карточки-->
 
-            <?php if ($post_content['type']=='post-quote'): ?>
+            <?php if ($post_content['type'] == 'post-quote'): ?>
                     <!--содержимое для поста-цитаты-->
                 <blockquote>
                     <p>
@@ -228,7 +247,7 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
                     </p>
                     <cite>Неизвестный Автор</cite>
                 </blockquote>
-            <?php elseif ($post_content['type']=='post-link'): ?>
+            <?php elseif ($post_content['type'] == 'post-link'): ?>
                 <!--содержимое для поста-ссылки-->
                 <div class="post-link__wrapper">
                     <a class="post-link__external" href="http://" title="Перейти по ссылке">
@@ -243,12 +262,12 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
                         <span><?= $post_content['content'] ?></span>
                     </a>
                 </div>
-            <?php elseif ($post_content['type']=='post-photo'): ?>
+            <?php elseif ($post_content['type'] == 'post-photo'): ?>
                 <!--содержимое для поста-фото-->
                 <div class="post-photo__image-wrapper">
                     <img src="img/<?= $post_content['content'] ?>" alt="Фото от пользователя" width="360" height="240">
                 </div>
-            <?php elseif ($post_content['type']=='post-video'): ?>
+            <?php elseif ($post_content['type'] == 'post-video'): ?>
                 <!--содержимое для поста-видео-->
                 <div class="post-video__block">
                     <div class="post-video__preview">
@@ -262,8 +281,8 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
                         <span class="visually-hidden">Запустить проигрыватель</span>
                     </a>
                 </div>
-            <?php elseif ($post_content['type']=='post-text'): ?>
-                <p><?= $post_content['content'] ?></p>
+            <?php elseif ($post_content['type'] == 'post-text'): ?>
+                <?= post_length_reduce($post_content['content']) ?>
             <?php endif; ?>
                 </div>
                 <footer class="post__footer">
@@ -274,7 +293,7 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
                                 <img class="post__author-avatar" src="img/<?=$post_content['avatar'] ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?=$post_content['user_name'] ?></b>
+                                <b class="post__author-name"><?= $post_content['user_name'] ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
