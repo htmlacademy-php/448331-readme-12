@@ -11,21 +11,18 @@ $posts_array = array(
 
 $user_name = 'Андрей'; // укажите здесь ваше имя
 
-function post_length_reduce($string_to_cut, $string_length = 300) {
-    if (strlen($string_to_cut) <= $string_length) {
-        return '<p>'.$string_to_cut.'</p>';
+function string_reduce(string $string_to_cut, int $string_length = 300) {
+    if (mb_strlen($string_to_cut) <= $string_length) {
+        return $string_to_cut;
     } else {
         $article_array = explode(" ", $string_to_cut); // разбиваем строку на массив слов
         foreach ($article_array as $value) {
-            $sum_words += strlen($value) + 1; // +1 - учитываем так же пробелы между словами как символ
-            $i++;
-            if ($sum_words > $string_length) {
+            $resulted_string .= ' '.$value; 
+            if (mb_strlen($resulted_string) >= $string_length) {
                 break;
             } 
         }
-        $resulted_array = array_slice($article_array, 0, $i); 
-        $resulted_string = (implode(" ", $resulted_array))."...";
-        return '<p>'.$resulted_string.'</p><a class="post-text__more-link" href="#">Читать далее</a>';
+        return $resulted_string.'...';
     }
 }
 
@@ -282,7 +279,10 @@ function post_length_reduce($string_to_cut, $string_length = 300) {
                     </a>
                 </div>
             <?php elseif ($post_content['type'] == 'post-text'): ?>
-                <?= post_length_reduce($post_content['content']) ?>
+                <p><?= string_reduce($post_content['content']) ?></p>
+                <?php if ($post_content['content'] !== string_reduce($post_content['content'])): ?>
+                    <a class="post-text__more-link" href="#">Читать далее</a>
+                <?php endif; ?>
             <?php endif; ?>
                 </div>
                 <footer class="post__footer">
