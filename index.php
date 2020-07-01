@@ -14,16 +14,14 @@ $user_name = 'Андрей'; // укажите здесь ваше имя
 function string_reduce(string $string_to_cut, int $string_length = 300) {
     if (mb_strlen($string_to_cut) <= $string_length) {
         return $string_to_cut;
-    } else {
-        $article_array = explode(" ", $string_to_cut); // разбиваем строку на массив слов
-        foreach ($article_array as $value) {
-            $resulted_string .= ' '.$value; 
-            if (mb_strlen($resulted_string) >= $string_length) {
-                break;
-            } 
-        }
-        return $resulted_string.'...';
     }
+    $article_array = explode(' ', $string_to_cut); // разбиваем строку на массив слов
+    $i = 0;
+    while (mb_strlen($resulted_string) < $string_length) {
+        $resulted_string .= ' '.$article_array[$i];
+        $i++;
+    }
+    return $resulted_string.'...';
 }
 
 ?>
