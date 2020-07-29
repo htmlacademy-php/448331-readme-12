@@ -88,7 +88,7 @@
             <?php foreach ($posts_array as $post_content): ?>
             <article class="popular__post post <?= $post_content['type'] ?>">
                 <header class="post__header">
-                    <h2><?= string_filter($post_content['header']) ?></h2>
+                    <h2><?= htmlspecialchars($post_content['header']) ?></h2>
                 </header>
                 <div class="post__main">
                     <!--здесь содержимое карточки-->
@@ -97,7 +97,7 @@
                     <!--содержимое для поста-цитаты-->
                 <blockquote>
                     <p>
-                        <?= string_filter($post_content['content']) ?>
+                        <?= htmlspecialchars($post_content['content']) ?>
                     </p>
                     <cite>Неизвестный Автор</cite>
                 </blockquote>
@@ -110,10 +110,10 @@
                                 <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                             </div>
                             <div class="post-link__info">
-                                <h3><?= string_filter($post_content['header']) ?></h3>
+                                <h3><?= htmlspecialchars($post_content['header']) ?></h3>
                             </div>
                         </div>
-                        <span><?= string_filter($post_content['content']) ?></span>
+                        <span><?= htmlspecialchars($post_content['content']) ?></span>
                     </a>
                 </div>
             <?php elseif ($post_content['type'] == 'post-photo'): ?>
@@ -136,7 +136,7 @@
                     </a>
                 </div>
             <?php elseif ($post_content['type'] == 'post-text'): ?>
-                <p><?= string_filter(string_reduce($post_content['content'])) ?></p>
+                <p><?= htmlspecialchars(string_reduce($post_content['content'])) ?></p>
                 <?php if ($post_content['content'] !== string_reduce($post_content['content'])): ?>
                     <a class="post-text__more-link" href="#">Читать далее</a>
                 <?php endif; ?>

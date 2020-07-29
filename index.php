@@ -25,11 +25,6 @@ function string_reduce(string $string_to_cut, int $string_length = 300) {
     return $resulted_string.'...';
 }
 
-function string_filter($str) {
-    $output = htmlspecialchars($str);
-    return $output;
-}
-
 $page_content = include_template('main.php', ['posts_array' => $posts_array]);
 $layout_content = include_template('layout.php', ['page_content' => $page_content, 'page_title' => 'readme: популярное']);
 print($layout_content);
