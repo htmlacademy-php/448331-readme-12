@@ -85,7 +85,23 @@
         </div>
         <div class="popular__posts">
             
-            <?php foreach ($posts_array as $post_content): ?>
+            <?php foreach ($posts_array as $post_index => $post_content): ?>
+            <?php
+                $post_date = generate_random_date($post_index);
+                $post_date_timestamp = strtotime($post_date);
+                $date_interval = time() - $post_date_timestamp;
+                if ($date_interval < 3600) {
+                    $days_count = ceil($date_interval/60)." ".get_noun_plural_form(ceil($date_interval/60),'минута', 'минуты', 'минут')." назад";
+                } elseif ($date_interval < 86400) {
+                    $days_count = ceil($date_interval/3600)." ".get_noun_plural_form(ceil($date_interval/3600),'час', 'часа', 'часов')." назад";
+                } elseif ($date_interval < 604800) {
+                    $days_count = ceil($date_interval/86400)." ".get_noun_plural_form(ceil($date_interval/86400),'день', 'дня', 'дней')." назад";
+                } elseif ($date_interval < 3024000) {
+                    $days_count = ceil($date_interval/604800)." ".get_noun_plural_form(ceil($date_interval/604800),'неделя', 'недели', 'недель')." назад";
+                } else {
+                    $days_count = ceil($date_interval/2629800)." ".get_noun_plural_form(ceil($date_interval/2629800),'месяц', 'месяца', 'месяцев')." назад";
+                }
+            ?>
             <article class="popular__post post <?= $post_content['type'] ?>">
                 <header class="post__header">
                     <h2><?= htmlspecialchars($post_content['header']) ?></h2>
@@ -151,7 +167,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post_content['user_name'] ?></b>
-                                <time class="post__time" datetime="">дата</time>
+                                <time class="post__time" title="<?= date("d.m.Y H:i", $post_date_timestamp) ?>" datetime="<?= $post_date ?>"><?= $days_count ?></time>
                             </div>
                         </a>
                     </div>
