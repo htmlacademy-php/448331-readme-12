@@ -88,19 +88,35 @@
             <?php foreach ($posts_array as $post_index => $post_content): ?>
             <?php
                 $post_date = generate_random_date($post_index);
-                $post_date_timestamp = strtotime($post_date);
-                $date_interval = time() - $post_date_timestamp;
-                if ($date_interval < 3600) {
-                    $days_count = ceil($date_interval/60)." ".get_noun_plural_form(ceil($date_interval/60),'минута', 'минуты', 'минут')." назад";
-                } elseif ($date_interval < 86400) {
-                    $days_count = ceil($date_interval/3600)." ".get_noun_plural_form(ceil($date_interval/3600),'час', 'часа', 'часов')." назад";
-                } elseif ($date_interval < 604800) {
-                    $days_count = ceil($date_interval/86400)." ".get_noun_plural_form(ceil($date_interval/86400),'день', 'дня', 'дней')." назад";
-                } elseif ($date_interval < 3024000) {
-                    $days_count = ceil($date_interval/604800)." ".get_noun_plural_form(ceil($date_interval/604800),'неделя', 'недели', 'недель')." назад";
-                } else {
-                    $days_count = ceil($date_interval/2629800)." ".get_noun_plural_form(ceil($date_interval/2629800),'месяц', 'месяца', 'месяцев')." назад";
+                $post_date_obj = date_create($post_date);
+                $current_date = date_create("now");
+                $date_interval = date_diff($current_date, $post_date_obj);
+                $date_diff_unix = strtotime(date_interval_format($date_interval, '%Y-%M-%D %H:%I'));
+                define("WEEK", '7');
+                switch (true) {
+                    case ($date_diff_unix < strtotime('00-00-00 01:00')):
+                        $posted_time_ago = date_interval_format($date_interval, '%i');
+                        $plural_form = get_noun_plural_form($posted_time_ago, 'минута', 'минуты', 'минут');
+                        break;
+                    case ($date_diff_unix < strtotime('00-00-01 00:00')):
+                        $posted_time_ago = date_interval_format($date_interval, '%h'); 
+                        $plural_form = get_noun_plural_form($posted_time_ago, 'час', 'часа', 'часов');
+                        break;
+                    case ($date_diff_unix < strtotime('00-00-07 00:00')):
+                        $posted_time_ago = date_interval_format($date_interval, '%d'); 
+                        $plural_form = get_noun_plural_form($posted_time_ago, 'день', 'дня', 'дней');
+                        break;
+                    case ($date_diff_unix < strtotime('00-01-00 00:00')):
+                        $posted_time_ago = ceil(date_interval_format($date_interval, '%a') / WEEK); 
+                        $plural_form = get_noun_plural_form($posted_time_ago, 'неделя', 'недели', 'недель');
+                        break;
+                    default:
+                        $posted_time_ago = date_interval_format($date_interval, '%m'); 
+                        $plural_form = get_noun_plural_form($posted_time_ago, 'месяц', 'месяца', 'месяцев');
+                        break;
                 }
+                $days_count = "$posted_time_ago"." $plural_form"." назад";
+
             ?>
             <article class="popular__post post <?= $post_content['type'] ?>">
                 <header class="post__header">
@@ -167,7 +183,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post_content['user_name'] ?></b>
-                                <time class="post__time" title="<?= date("d.m.Y H:i", $post_date_timestamp) ?>" datetime="<?= $post_date ?>"><?= $days_count ?></time>
+                                <time class="post__time" title="<?= date_format($post_date_obj, 'd.m.Y H:i') ?>" datetime="<?= $post_date ?>"><?= $days_count ?></time>
                             </div>
                         </a>
                     </div>
