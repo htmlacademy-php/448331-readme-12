@@ -15,6 +15,37 @@ $posts_array = array(
 
 $user_name = 'Андрей'; // укажите здесь ваше имя
 
+function post_date_ago(string $input_date) {
+    $post_date_obj = date_create($input_date);
+    $current_date = date_create("now");
+    $date_interval = date_diff($current_date, $post_date_obj);
+    $date_diff_unix = strtotime(date_interval_format($date_interval, '%Y-%M-%D %H:%I'));
+    define("WEEK", '7');
+    switch (true) {
+        case ($date_diff_unix < strtotime('00-00-00 01:00')):
+            $posted_time_ago = date_interval_format($date_interval, '%i');
+            $plural_form = get_noun_plural_form($posted_time_ago, 'минута', 'минуты', 'минут');
+            break;
+        case ($date_diff_unix < strtotime('00-00-01 00:00')):
+            $posted_time_ago = date_interval_format($date_interval, '%h'); 
+            $plural_form = get_noun_plural_form($posted_time_ago, 'час', 'часа', 'часов');
+            break;
+        case ($date_diff_unix < strtotime('00-00-07 00:00')):
+            $posted_time_ago = date_interval_format($date_interval, '%d'); 
+            $plural_form = get_noun_plural_form($posted_time_ago, 'день', 'дня', 'дней');
+            break;
+        case ($date_diff_unix < strtotime('00-01-00 00:00')):
+            $posted_time_ago = ceil(date_interval_format($date_interval, '%a') / WEEK); 
+            $plural_form = get_noun_plural_form($posted_time_ago, 'неделя', 'недели', 'недель');
+            break;
+        default:
+            $posted_time_ago = date_interval_format($date_interval, '%m'); 
+            $plural_form = get_noun_plural_form($posted_time_ago, 'месяц', 'месяца', 'месяцев');
+            break;
+    }
+    return "$posted_time_ago"." $plural_form"." назад";
+}
+
 function string_reduce(string $string_to_cut, int $string_length = 300) {
     if (mb_strlen($string_to_cut) <= $string_length) {
         return $string_to_cut;
