@@ -85,7 +85,12 @@
         </div>
         <div class="popular__posts">
             
-            <?php foreach ($posts_array as $post_content): ?>
+            <?php foreach ($posts_array as $post_index => $post_content): ?>
+            <?php
+                $post_date = generate_random_date($post_index); //дата для поста без изменений
+                $post_time_title = date_format(date_create($post_date), 'd.m.Y H:i'); 
+                $days_count = post_date_ago($post_date);
+            ?>
             <article class="popular__post post <?= $post_content['type'] ?>">
                 <header class="post__header">
                     <h2><?= htmlspecialchars($post_content['header']) ?></h2>
@@ -151,7 +156,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post_content['user_name'] ?></b>
-                                <time class="post__time" datetime="">дата</time>
+                                <time class="post__time" title="<?= $post_time_title ?>" datetime="<?= $post_date ?>"><?= $days_count ?></time>
                             </div>
                         </a>
                     </div>
