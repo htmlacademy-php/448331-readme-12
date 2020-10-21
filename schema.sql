@@ -1,0 +1,58 @@
+CREATE DATABASE readme
+	DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE user (
+	user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	registration_date DATETIME DEFAULT NOW(),
+	email VARCHAR(40) NOT NULL UNIQUE,
+	login VARCHAR(40) NOT NULL UNIQUE,
+	password VARCHAR(30),
+	avatar VARCHAR(255)
+);
+
+CREATE TABLE post (
+	post_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	post_date DATETIME DEFAULT NOW(),
+	post_header VARCHAR(255) NOT NULL,
+	post_content TEXT NOT NULL,
+	quote_author VARCHAR(255),
+	image VARCHAR(255),
+	video VARCHAR(255),
+	link VARCHAR(255),
+	view_count INT UNSIGNED
+);
+
+CREATE TABLE comment (
+	comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	comment_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
+	comment_content TEXT NOT NULL
+);
+
+CREATE TABLE likes (
+	user_id INT UNSIGNED NOT NULL,
+	post_id INT UNSIGNED NOT NULL,
+	PRIMARY KEY (user_id, post_id)
+);
+
+CREATE TABLE subscription (
+	subscriber_id INT UNSIGNED NOT NULL,
+	author_id INT UNSIGNED NOT NULL,
+	PRIMARY KEY (subscriber_id, author_id)
+);
+
+CREATE TABLE message (
+	message_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	message_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
+	message_content TEXT NOT NULL
+);
+
+CREATE TABLE hashtag (
+	hashtag_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	hashtag_name VARCHAR(100) UNIQUE NOT NULL 
+);
+
+CREATE TABLE content_type (
+	id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	type VARCHAR(8) UNIQUE NOT NULL,
+	class VARCHAR(5) UNIQUE NOT NULL
+);
