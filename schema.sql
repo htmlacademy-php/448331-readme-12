@@ -4,30 +4,44 @@ CREATE DATABASE readme
 USE readme;
 
 CREATE TABLE user (
-	user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	registration_date DATETIME DEFAULT NOW(),
-	email VARCHAR(40) NOT NULL UNIQUE,
-	login VARCHAR(40) NOT NULL UNIQUE,
-	password VARCHAR(30),
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	registration_date DATETIME DEFAULT NOW() NOT NULL,
+	email VARCHAR(70) NOT NULL UNIQUE,
+	login VARCHAR(70) NOT NULL UNIQUE,
+	password VARCHAR(70),
 	avatar VARCHAR(255)
 );
 
+CREATE TABLE content_type (
+	id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	type VARCHAR(8) UNIQUE NOT NULL,
+	class VARCHAR(5) UNIQUE NOT NULL
+);
+
 CREATE TABLE post (
-	post_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	post_date DATETIME DEFAULT NOW(),
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	post_date DATETIME DEFAULT NOW() NOT NULL,
 	post_header VARCHAR(255) NOT NULL,
-	post_content TEXT NOT NULL,
+	post_content TEXT,
 	quote_author VARCHAR(255),
 	image VARCHAR(255),
 	video VARCHAR(255),
 	link VARCHAR(255),
-	view_count INT UNSIGNED
+	view_count INT UNSIGNED DEFAULT 0,
+	user_id INT UNSIGNED NOT NULL,
+	content_type TINYINT UNSIGNED NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES user(id),
+	FOREIGN KEY (content_type) REFERENCES content_type(id)
 );
 
 CREATE TABLE comment (
-	comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	comment_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
-	comment_content TEXT NOT NULL
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	comment_date DATETIME DEFAULT NOW() NOT NULL,
+	comment_content TEXT NOT NULL,
+	user_id INT UNSIGNED NOT NULL,
+	post_id INT UNSIGNED NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES user(id),
+	FOREIGN KEY (post_id) REFERENCES post(id)
 );
 
 CREATE TABLE likes (
@@ -39,22 +53,31 @@ CREATE TABLE likes (
 CREATE TABLE subscription (
 	subscriber_id INT UNSIGNED NOT NULL,
 	author_id INT UNSIGNED NOT NULL,
-	PRIMARY KEY (subscriber_id, author_id)
+	PRIMARY KEY (subscriber_id, author_id),
+	FOREIGN KEY (subscriber_id) REFERENCES user(id),
+	FOREIGN KEY (author_id) REFERENCES user(id)
 );
 
 CREATE TABLE message (
-	message_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	message_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
-	message_content TEXT NOT NULL
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	message_date DATETIME DEFAULT NOW() NOT NULL,
+	message_content TEXT NOT NULL,
+	sender_id INT UNSIGNED NOT NULL,
+	recipient_id INT UNSIGNED NOT NULL,
+	readen TINYINT(1) DEFAULT 0,
+	FOREIGN KEY (sender_id)REFERENCES user(id),
+	FOREIGN KEY (recipient_id) REFERENCES user(id)
 );
 
 CREATE TABLE hashtag (
-	hashtag_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	hashtag_name VARCHAR(100) UNIQUE NOT NULL 
 );
 
-CREATE TABLE content_type (
-	id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	type VARCHAR(8) UNIQUE NOT NULL,
-	class VARCHAR(5) UNIQUE NOT NULL
-);
+CREATE TABLE tag_in_post (
+	tag_id INT UNSIGNED,
+	post_id INT UNSIGNED,
+	PRIMARY KEY (tag_id, post_id),
+	FOREIGN KEY (tag_id) REFERENCES hashtag(id),
+	FOREIGN KEY (post_id) REFERENCES post(id)
+)
