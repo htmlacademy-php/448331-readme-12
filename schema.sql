@@ -30,6 +30,8 @@ CREATE TABLE post (
 	view_count INT UNSIGNED DEFAULT 0,
 	user_id INT UNSIGNED NOT NULL,
 	content_type TINYINT UNSIGNED NOT NULL,
+	FULLTEXT (post_content),
+	FULLTEXT (post_header),
 	FOREIGN KEY (user_id) REFERENCES user(id),
 	FOREIGN KEY (content_type) REFERENCES content_type(id)
 );
