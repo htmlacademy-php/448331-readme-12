@@ -1,5 +1,6 @@
 CREATE DATABASE readme
-	DEFAULT CHARACTER SET utf8;
+	DEFAULT CHARACTER SET utf8,
+	DEFAULT COLLATE utf8_general_ci;
 
 USE readme;
 
@@ -8,7 +9,7 @@ CREATE TABLE user (
 	registration_date DATETIME DEFAULT NOW() NOT NULL,
 	email VARCHAR(70) NOT NULL UNIQUE,
 	login VARCHAR(70) NOT NULL UNIQUE,
-	password VARCHAR(70),
+	password VARCHAR(70) NOT NULL,
 	avatar VARCHAR(255)
 );
 
@@ -30,8 +31,7 @@ CREATE TABLE post (
 	view_count INT UNSIGNED DEFAULT 0,
 	user_id INT UNSIGNED NOT NULL,
 	content_type TINYINT UNSIGNED NOT NULL,
-	FULLTEXT (post_content),
-	FULLTEXT (post_header),
+	FULLTEXT (post_header, post_content),
 	FOREIGN KEY (user_id) REFERENCES user(id),
 	FOREIGN KEY (content_type) REFERENCES content_type(id)
 );
@@ -49,6 +49,7 @@ CREATE TABLE comment (
 CREATE TABLE likes (
 	user_id INT UNSIGNED NOT NULL,
 	post_id INT UNSIGNED NOT NULL,
+	like_date DATETIME DEFAULT NOW() NOT NULL,
 	PRIMARY KEY (user_id, post_id)
 );
 
@@ -66,7 +67,7 @@ CREATE TABLE message (
 	message_content TEXT NOT NULL,
 	sender_id INT UNSIGNED NOT NULL,
 	recipient_id INT UNSIGNED NOT NULL,
-	readen TINYINT(1) DEFAULT 0,
+	is_read TINYINT(1) DEFAULT 0,
 	FOREIGN KEY (sender_id)REFERENCES user(id),
 	FOREIGN KEY (recipient_id) REFERENCES user(id)
 );
@@ -83,3 +84,4 @@ CREATE TABLE tag_in_post (
 	FOREIGN KEY (tag_id) REFERENCES hashtag(id),
 	FOREIGN KEY (post_id) REFERENCES post(id)
 )
+
