@@ -38,7 +38,7 @@ JOIN content_type ON post.content_type = content_type.id
 ORDER BY view_count;
 
 /* Получаем список постов пользователя 2 */
-SELECT post.post_header
+SELECT post.post_header AS Заголовок, post.post_date AS Дата
 FROM post 
 WHERE user_id = 2;
 
