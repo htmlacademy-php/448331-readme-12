@@ -31,27 +31,26 @@ INSERT INTO comment (comment_date, comment_content, user_id, post_id)
 
 
 /* Список постов с сортировкой по популярности вместе с именами авторов и типом контента */
-SELECT post.post_header AS Заголовок, user.login AS Автор, content_type.type AS Тип
+SELECT post.post_header AS Header, user.login AS Author, content_type.type AS Content type
 FROM post 
 JOIN user ON post.user_id = user.id
 JOIN content_type ON post.content_type = content_type.id
 ORDER BY view_count;
 
 /* Получаем список постов пользователя 2 */
-SELECT post.post_header AS Заголовок, post.post_date AS Дата
+SELECT post.post_header AS Header, post.post_date AS Data
 FROM post 
 WHERE user_id = 2;
 
 /* Получаем список комментариев для поста 1 с указанием автора комментария */
-SELECT comment.comment_content AS Комментарий, user.login AS Автор
+SELECT comment.comment_content AS Comment, user.login AS Author
 FROM comment 
-JOIN post ON comment.post_id = post.id 
 JOIN user ON comment.user_id = user.id
 WHERE comment.post_id = 1;
 
 /* Добавить лайк к посту 1 от пользователя 1 */
-INSERT INTO likes (user_id, post_id, like_date)
-     VALUES ('1', '1', DEFAULT);
+INSERT INTO likes (user_id, post_id)
+     VALUES ('1', '1');
 
 /* Подписка пользователя 1 на пользователя 2 */
 INSERT INTO subscription (subscriber_id, author_id)
