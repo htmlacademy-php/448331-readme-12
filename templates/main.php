@@ -40,46 +40,16 @@
                             <span>Все</span>
                         </a>
                     </li>
+                    <?php foreach ($content_types as $content): ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--photo button" href="#">
-                            <span class="visually-hidden">Фото</span>
+                        <a class="filters__button filters__button--<?= $content['class'] ?> button" href="#">
+                            <span class="visually-hidden"><?= $content['type'] ?></span>
                             <svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-photo"></use>
+                                <use xlink:href="#icon-filter-<?= $content['class'] ?>"></use>
                             </svg>
                         </a>
                     </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--video button" href="#">
-                            <span class="visually-hidden">Видео</span>
-                            <svg class="filters__icon" width="24" height="16">
-                                <use xlink:href="#icon-filter-video"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--text button" href="#">
-                            <span class="visually-hidden">Текст</span>
-                            <svg class="filters__icon" width="20" height="21">
-                                <use xlink:href="#icon-filter-text"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--quote button" href="#">
-                            <span class="visually-hidden">Цитата</span>
-                            <svg class="filters__icon" width="21" height="20">
-                                <use xlink:href="#icon-filter-quote"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--link button" href="#">
-                            <span class="visually-hidden">Ссылка</span>
-                            <svg class="filters__icon" width="21" height="18">
-                                <use xlink:href="#icon-filter-link"></use>
-                            </svg>
-                        </a>
-                    </li>
+                    <?php endforeach; ?>       
                 </ul>
             </div>
         </div>
@@ -87,18 +57,18 @@
             
             <?php foreach ($posts_array as $post_index => $post_content): ?>
             <?php
-                $post_date = generate_random_date($post_index); //дата для поста без изменений
+                $post_date = $post_content['post_date']; //дата для поста без изменений
                 $post_time_title = date_format(date_create($post_date), 'd.m.Y H:i'); 
                 $days_count = post_date_ago($post_date);
             ?>
-            <article class="popular__post post <?= $post_content['type'] ?>">
+            <article class="popular__post post <?= "post-".$post_content['type'] ?>">
                 <header class="post__header">
                     <h2><?= htmlspecialchars($post_content['header']) ?></h2>
                 </header>
                 <div class="post__main">
                     <!--здесь содержимое карточки-->
 
-            <?php if ($post_content['type'] == 'post-quote'): ?>
+            <?php if ($post_content['type'] == 'quote'): ?>
                     <!--содержимое для поста-цитаты-->
                 <blockquote>
                     <p>
@@ -106,7 +76,7 @@
                     </p>
                     <cite>Неизвестный Автор</cite>
                 </blockquote>
-            <?php elseif ($post_content['type'] == 'post-link'): ?>
+            <?php elseif ($post_content['type'] == 'link'): ?>
                 <!--содержимое для поста-ссылки-->
                 <div class="post-link__wrapper">
                     <a class="post-link__external" href="http://" title="Перейти по ссылке">
@@ -115,18 +85,18 @@
                                 <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                             </div>
                             <div class="post-link__info">
-                                <h3><?= htmlspecialchars($post_content['header']) ?></h3>
+                                <h3><?= htmlspecialchars($post_content['link']) ?></h3>
                             </div>
                         </div>
                         <span><?= htmlspecialchars($post_content['content']) ?></span>
                     </a>
                 </div>
-            <?php elseif ($post_content['type'] == 'post-photo'): ?>
+            <?php elseif ($post_content['type'] == 'photo'): ?>
                 <!--содержимое для поста-фото-->
                 <div class="post-photo__image-wrapper">
-                    <img src="img/<?= $post_content['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                    <img src="img/<?= $post_content['image'] ?>" alt="Фото от пользователя" width="360" height="240">
                 </div>
-            <?php elseif ($post_content['type'] == 'post-video'): ?>
+            <?php elseif ($post_content['type'] == 'video'): ?>
                 <!--содержимое для поста-видео-->
                 <div class="post-video__block">
                     <div class="post-video__preview">
@@ -140,7 +110,7 @@
                         <span class="visually-hidden">Запустить проигрыватель</span>
                     </a>
                 </div>
-            <?php elseif ($post_content['type'] == 'post-text'): ?>
+            <?php elseif ($post_content['type'] == 'text'): ?>
                 <p><?= htmlspecialchars(string_reduce($post_content['content'])) ?></p>
                 <?php if ($post_content['content'] !== string_reduce($post_content['content'])): ?>
                     <a class="post-text__more-link" href="#">Читать далее</a>
