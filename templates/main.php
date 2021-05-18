@@ -1,5 +1,5 @@
 <?php
-if ($_GET['content_id']) {
+if (isset($_GET['content_id'])) {
     $selected_content_type_id = $_GET['content_id'];
 } else {
     $a_selected_class = "filters__button--active";

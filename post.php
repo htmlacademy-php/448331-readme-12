@@ -6,24 +6,23 @@ setlocale(LC_ALL, 'ru_RU');
 $con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
 mysqli_set_charset($con, "utf8");
 
-
+$post_exists = 0;
 if (is_numeric($_GET['post_id'])) {
   $post_id = $_GET['post_id'];
+  $sql_post_content = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id, user_id
+                  FROM post
+                  JOIN user ON post.user_id = user.id
+                  JOIN content_type ON post.content_type = content_type.id
+                  WHERE post.id = ?";
+
+  $stmt = mysqli_prepare($con, $sql_post_content);// пробная часть с подготовленными выражениями
+  mysqli_stmt_bind_param($stmt, 'i', $post_id);
+  mysqli_stmt_execute($stmt);
+  $res = mysqli_stmt_get_result($stmt);
+  $post_exists = mysqli_num_rows($res);
 }
 
-$sql_post_content = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id, user_id
-                    FROM post
-                    JOIN user ON post.user_id = user.id
-                    JOIN content_type ON post.content_type = content_type.id
-                    WHERE post.id = ?";
-
-
-$stmt = mysqli_prepare($con, $sql_post_content);// пробная часть с подготовленными выражениями
-mysqli_stmt_bind_param($stmt, 'i', $post_id);
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-
-if (!mysqli_num_rows($res)) {
+if (!$post_exists) {
   http_response_code(404);
   exit;
 } else {
