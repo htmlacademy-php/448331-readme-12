@@ -1,3 +1,10 @@
+<?php
+if (isset($_GET['content_id'])) {
+    $selected_content_type_id = $_GET['content_id'];
+} else {
+    $a_selected_class = "filters__button--active";
+}
+?>
 <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
     </div>
@@ -36,13 +43,19 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                        <a class="<?= $a_selected_class ?> filters__button filters__button--ellipse filters__button--all filters__button--active" href="index.php">
                             <span>Все</span>
                         </a>
                     </li>
                     <?php foreach ($content_types as $content): ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--<?= $content['class'] ?> button" href="#">
+                        <?php
+                        $a_selected_class = "";
+                        if ($selected_content_type_id == $content['id']) {
+                            $a_selected_class = "filters__button--active";
+                        }
+                        ?>
+                        <a class="<?= $a_selected_class ?> filters__button filters__button--<?= $content['class'] ?> button" href="/?content_id=<?= $content['id'] ?>">
                             <span class="visually-hidden"><?= $content['type'] ?></span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $content['class'] ?>"></use>
@@ -63,7 +76,7 @@
             ?>
             <article class="popular__post post <?= "post-".$post_content['type'] ?>">
                 <header class="post__header">
-                    <h2><?= htmlspecialchars($post_content['header']) ?></h2>
+                    <h2><?= '<a href="post.php?post_id='.$post_content['id'].'">'.htmlspecialchars($post_content['header']).'</a>' ?></h2>
                 </header>
                 <div class="post__main">
                     <!--здесь содержимое карточки-->
