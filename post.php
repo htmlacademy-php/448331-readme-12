@@ -10,10 +10,10 @@ $post_exists = 0;
 if (is_numeric($_GET['post_id'])) {
   $post_id = $_GET['post_id'];
   $sql_post_content = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id, user_id
-                  FROM post
-                  JOIN user ON post.user_id = user.id
-                  JOIN content_type ON post.content_type = content_type.id
-                  WHERE post.id = ?";
+                        FROM post
+                        JOIN user ON post.user_id = user.id
+                        JOIN content_type ON post.content_type = content_type.id
+                        WHERE post.id = ?";
 
   $stmt = mysqli_prepare($con, $sql_post_content);// пробная часть с подготовленными выражениями
   mysqli_stmt_bind_param($stmt, 'i', $post_id);
@@ -26,7 +26,7 @@ if (!$post_exists) {
   http_response_code(404);
   exit;
 } else {
-  $post_content_array = mysqli_fetch_all($res,  MYSQLI_ASSOC);
+  $post_content_array = mysqli_fetch_assoc($res);
   $user_id = $post_content_array['user_id'];
 
   $sql_subscribers_amount = "SELECT COUNT(*)
