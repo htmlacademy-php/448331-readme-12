@@ -14,7 +14,10 @@ function video_link_validation ($value) {
     if (!filter_var($value, FILTER_VALIDATE_URL)) {
         return 'Пожалуйста, проверьте и введите корректный адрес ссылки';
     }
-    return check_youtube_url($value);
+    $result = check_youtube_url($value);
+    if ($result !== true) {
+        return $result;
+    }
 }
 
 
@@ -62,6 +65,12 @@ function is_error_field ($value) {
         return null;
     } else {
         return 'form__input-section--error';
+    }
+}
+
+function is_active_form ($value1, $value2) {
+    if ($value1 == $value2) {
+        return 'filters__button--active tabs__item--active';
     }
 }
 

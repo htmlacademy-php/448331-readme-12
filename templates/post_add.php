@@ -115,7 +115,7 @@
               <ul class="adding-post__tabs-list filters__list tabs__list">
                 <?php foreach ($content_type as $content): ?>
                 <li class="adding-post__tabs-item filters__item">
-                  <a class="adding-post__tabs-link filters__button filters__button--<?= $content['post_class'] ?> tabs__item button <?= $content['active_form'] ?>">
+                  <a class="adding-post__tabs-link filters__button filters__button--<?= $content['post_class'] ?> tabs__item button <?= is_active_form($content['id'], $active_form_type) ?>">
                     <svg class="filters__icon" width="22" height="18">
                       <use xlink:href="#icon-filter-<?= $content['post_class'] ?>"></use>
                     </svg>
@@ -127,7 +127,7 @@
             </div>
             <div class="adding-post__tab-content">
 
-              <section class="adding-post__text tabs__content">
+              <section class="adding-post__text tabs__content tabs__content--active">
                 <h2 class="visually-hidden">Форма добавления текста</h2>
                 <form class="adding-post__form form" action="add.php" method="post">
                   <div class="form__text-inputs-wrapper">
@@ -250,7 +250,7 @@
                 </form>
               </section>
 
-              <section class="adding-post__photo tabs__content tabs__content--active">
+              <section class="adding-post__photo tabs__content">
                 <h2 class="visually-hidden">Форма добавления фото</h2>
                 <form class="adding-post__form form" action="add.php" method="post" enctype="multipart/form-data">
                   <div class="form__text-inputs-wrapper">
@@ -520,7 +520,7 @@
     </div>
 
     <script src="libs/dropzone.js"></script>
-    <script src="js/dropzone-settings.js"></script>
+
     <script src="js/main.js"></script>
   </body>
 </html>
