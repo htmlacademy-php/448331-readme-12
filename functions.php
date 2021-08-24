@@ -18,17 +18,38 @@ function video_link_validation ($value) {
     if ($result !== true) {
         return $result;
     }
+    return NULL;
 }
 
 
 function photo_link_validation ($value) {
-    if (empty($value) & !isset($_FILES['added-photo-file'])) {
+    if (!empty($_FILES['added-photo-file']['name'])) {               // работаем с файлом, проверяем , загружаем
+      $tmp_name = $_FILES['added-photo-file']['tmp_name'];
+      $path = 'uploads/'.$_FILES['added-photo-file']['name'];
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $file_type = finfo_file($finfo, $tmp_name);
+        if (!in_array($file_type, ALLOWED_IMAGE_TYPES)) {
+        return 'Загрузите картинку в допустимом формате';
+       } else {
+        return null;
+       }
+    }
+
+    if (empty($value)) {
         return 'Адрес ссылки должен быть заполнен';
     }
-    if (!filter_var($value, FILTER_VALIDATE_URL) & !isset($_FILES['added-photo-file'])) {
+    if (!filter_var($value, FILTER_VALIDATE_URL)) {
         return 'Введите корректный адрес ссылки';
     }
 
+    $link = $value;
+    $file_info = pathinfo($link);
+
+    if (!in_array($file_info['extension'], ALLOWED_IMAGE_TYPES)) {
+        return 'Недопустимый формат изображения';
+    } elseif (!file_get_contents($link)) {
+        return "Не удалось скачать изображение";
+    } 
     return null;
 }
 
@@ -57,7 +78,11 @@ function validate_tags($value): ?string {             // функция вали
 }
 
 function getPostVal($name) {
-    return $_POST[$name] ?? "";
+    if (isset($_POST[$name])) {
+        return $_POST[$name];
+    } else {
+        return "";
+    }
 }
 
 function is_error_field ($value) {
@@ -74,4 +99,29 @@ function is_active_form ($value1, $value2) {
     }
 }
 
+function add_hashtag ($tag_name, $con, $new_post_id) {
+    $sql = "SELECT id
+            FROM hashtag
+            WHERE hashtag_name LIKE ?;"; // возможно надо like
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 's', $tag_name);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $hashtag_id = mysqli_fetch_row($res);
+
+    if (!$hashtag_id) {
+        $sql = "INSERT INTO hashtag (hashtag_name)
+                VALUES (?)";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $tag_name);
+        mysqli_stmt_execute($stmt);
+        $hashtag_id = mysqli_insert_id($con);
+    }
+
+    $sql = "INSERT INTO tag_in_post (tag_id, post_id)
+                 VALUES ( ?, ?);";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'ii', $hashtag_id, $new_post_id);
+    mysqli_stmt_execute($stmt);
+}
 ?>

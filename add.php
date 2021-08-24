@@ -12,7 +12,7 @@ $sql_content_types_select = "SELECT id, type AS post_type, class AS post_class
 $content_types_array = mysqli_query($con, $sql_content_types_select);
 $content_types = mysqli_fetch_all($content_types_array,  MYSQLI_ASSOC);
 
-$active_form_type = '1';
+$active_form_type = 'text';
 $errors = []; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отправлена, а не первый раз открываем страницу
@@ -54,26 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
 
   if (($active_form_type == 'photo') & empty($errors['photo-link'])) {
 
-    if (!empty($_FILES['added-photo-file']['name']))  {   
-                                                               // работаем с файлом, проверяем , загружаем
+    if (!empty($_FILES['added-photo-file']['name']))  {   // работаем с файлом, проверяем , загружаем
+                                                               
       $tmp_name = $_FILES['added-photo-file']['tmp_name'];
       $path = 'uploads/'.$_FILES['added-photo-file']['name'];
       move_uploaded_file($tmp_name, $path);
       $post_data['photo-link'] = $_FILES['added-photo-file']['name'];
 
-    } elseif (empty($errors['photo-link'])) {      
-                                                        // или скачиваем файл по ссылке
+    } else {      // или скачиваем файл по ссылке
+                                                        
       $link = $post_data['photo-link'];
       $file_info = pathinfo($link);
-        if (!in_array($file_info['extension'], $allowed_image_types)) {
-          $errors['photo-link'] = 'Недопустимый формат изображения';
-        } elseif ($file = file_get_contents($link)) {
-          $file_path = "uploads/".$file_info['basename'];
-          file_put_contents($file_path, $file);
-          $post_data['photo-link'] = $file_path;
-        } else {
-          $errors['photo-link'] = "Не удалось скачать изображение";
-        }
+      $file_path = "uploads/".$file_info['basename'];
+      file_put_contents($file_path, $file);
+      $post_data['photo-link'] = $file_path;
     }
 
   }
@@ -88,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
 
   }                     // если не было ошибок, добавляем записи в базу и переадресовываем на страницу поста
 
-  $sql_add_query = "INSERT INTO post (post_date, post_header, post_content, quote_author, image, video, link, view_count, user_id, content_type)
-               VALUES (NOW(), ?, ?, ?, ?, ?, ?, , 1, ?)";
+  $sql_add_query = "INSERT INTO post (post_date, post_header, post_content, quote_author, image, video, link, user_id, content_type)
+               VALUES (NOW(), ?, ?, ?, ?, ?, ?, 1, ?)";
   $stmt = mysqli_prepare($con, $sql_add_query);
-    mysqli_stmt_bind_param($stmt, 'sssssss', $post_data['post-header'], $post_data['post-text'], $post_data['quote-author'], $post_data['photo-link'], $post_data['video-link'], $post_data['post-link'], $post_data['content-type']);
+  mysqli_stmt_bind_param($stmt, 'sssssss', $post_data['post-header'], $post_data['post-text'], $post_data['quote-author'], $post_data['photo-link'], $post_data['video-link'], $post_data['post-link'], $post_data['content-id']);
     mysqli_stmt_execute($stmt);
     $new_post_id = mysqli_insert_id($con);
 

@@ -115,7 +115,7 @@
               <ul class="adding-post__tabs-list filters__list tabs__list">
                 <?php foreach ($content_type as $content): ?>
                 <li class="adding-post__tabs-item filters__item">
-                  <a class="adding-post__tabs-link filters__button filters__button--<?= $content['post_class'] ?> tabs__item button <?= is_active_form($content['id'], $active_form_type) ?>">
+                  <a class="adding-post__tabs-link filters__button filters__button--<?= $content['post_class'] ?> tabs__item button <?= is_active_form($content['post_class'], $active_form_type) ?>">
                     <svg class="filters__icon" width="22" height="18">
                       <use xlink:href="#icon-filter-<?= $content['post_class'] ?>"></use>
                     </svg>
@@ -180,6 +180,7 @@
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
                   <input type="hidden" name="content-type" value="text">
+                  <input type="hidden" name="content-id" value="1">
                 </form>
               </section>
 
@@ -247,6 +248,7 @@
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
                   <input type="hidden" name="content-type" value="quote">
+                  <input type="hidden" name="content-id" value="2">
                 </form>
               </section>
 
@@ -322,6 +324,7 @@
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
                   <input type="hidden" name="content-type" value="photo">
+                  <input type="hidden" name="content-id" value="3">
                 </form>
               </section>
 
@@ -379,6 +382,7 @@
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
                   <input type="hidden" name="content-type" value="video">
+                  <input type="hidden" name="content-id" value="4">
                 </form>
               </section>
 
@@ -435,6 +439,7 @@
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
                   <input type="hidden" name="content-type" value="link">
+                  <input type="hidden" name="content-id" value="5">
                 </form>
               </section>
 
