@@ -179,7 +179,7 @@
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
-                  <input type="hidden" name="content-type" value="1">
+                  <input type="hidden" name="content-type" value="text">
                 </form>
               </section>
 
@@ -246,7 +246,7 @@
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
-                  <input type="hidden" name="content-type" value="2">
+                  <input type="hidden" name="content-type" value="quote">
                 </form>
               </section>
 
@@ -321,7 +321,7 @@
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
-                  <input type="hidden" name="content-type" value="3">
+                  <input type="hidden" name="content-type" value="photo">
                 </form>
               </section>
 
@@ -378,7 +378,7 @@
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
-                  <input type="hidden" name="content-type" value="4">
+                  <input type="hidden" name="content-type" value="video">
                 </form>
               </section>
 
@@ -434,7 +434,7 @@
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
                     <a class="adding-post__close" href="#">Закрыть</a>
                   </div>
-                  <input type="hidden" name="content-type" value="5">
+                  <input type="hidden" name="content-type" value="link">
                 </form>
               </section>
 

@@ -18,7 +18,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отправлена, а не первый раз открываем страницу
   $post_data = $_POST;
   $active_form_type = $post_data['content-type'];
-  $allowed_image_types = ['png', 'jpg', 'gif', 'image/gif', 'image/png', 'image/jpg'];
+  define ('ALLOWED_IMAGE_TYPES', ['png', 'jpg', 'gif', 'image/gif', 'image/png', 'image/jpg']);
 
 
   $rules = [                                            
@@ -52,23 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
 
   $errors = array_filter($errors);
 
-  if ($active_form_type == 3) {
+  if (($active_form_type == 'photo') & empty($errors['photo-link'])) {
 
-    if (!empty($_FILES['added-photo-file']['name'])) {               // работаем с файлом, проверяем , загружаем
-
+    if (!empty($_FILES['added-photo-file']['name']))  {   
+                                                               // работаем с файлом, проверяем , загружаем
       $tmp_name = $_FILES['added-photo-file']['tmp_name'];
       $path = 'uploads/'.$_FILES['added-photo-file']['name'];
-      $finfo = finfo_open(FILEINFO_MIME_TYPE);
-      $file_type = finfo_file($finfo, $tmp_name);
+      move_uploaded_file($tmp_name, $path);
+      $post_data['photo-link'] = $_FILES['added-photo-file']['name'];
 
-        if (!in_array($file_type, $allowed_image_types)) {
-          $errors['photo-link'] = 'Загрузите картинку в допустимом формате';
-        } else {
-          move_uploaded_file($tmp_name, $path);
-          $post_data['photo-link'] = $_FILES['added-photo-file']['name'];
-        }
-
-    } elseif (empty($errors['photo-link'])) {                                                          // или скачиваем файл по ссылке
+    } elseif (empty($errors['photo-link'])) {      
+                                                        // или скачиваем файл по ссылке
       $link = $post_data['photo-link'];
       $file_info = pathinfo($link);
         if (!in_array($file_info['extension'], $allowed_image_types)) {
@@ -86,49 +80,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
 
     
 
-  if (count($errors)) {      // если были ошибки, загружаем страницу и показываем ошибки
+  if (!empty($errors)) {      // если были ошибки, загружаем страницу и показываем ошибки
 
     $page_content = include_template('post_add.php', ['content_type' => $content_types, 'active_form_type' => $active_form_type, 'errors' => $errors]);
     print($page_content);
+    exit();
 
-  } else {                     // если не было ошибок, добавляем записи в базу и переадресовываем на страницу поста
+  }                     // если не было ошибок, добавляем записи в базу и переадресовываем на страницу поста
 
-    $sql_add_query = "INSERT INTO post (post_date, post_header, post_content, quote_author, image, video, link, view_count, user_id, content_type)
-                 VALUES (NOW(), ?, ?, ?, ?, ?, ?, DEFAULT, 1, ?)";
-    $stmt = mysqli_prepare($con, $sql_add_query);
-      mysqli_stmt_bind_param($stmt, 'sssssss', $post_data['post-header'], $post_data['post-text'], $post_data['quote-author'], $post_data['photo-link'], $post_data['video-link'], $post_data['post-link'], $post_data['content-type']);
-      mysqli_stmt_execute($stmt);
-      $new_post_id = mysqli_insert_id($con);
+  $sql_add_query = "INSERT INTO post (post_date, post_header, post_content, quote_author, image, video, link, view_count, user_id, content_type)
+               VALUES (NOW(), ?, ?, ?, ?, ?, ?, , 1, ?)";
+  $stmt = mysqli_prepare($con, $sql_add_query);
+    mysqli_stmt_bind_param($stmt, 'sssssss', $post_data['post-header'], $post_data['post-text'], $post_data['quote-author'], $post_data['photo-link'], $post_data['video-link'], $post_data['post-link'], $post_data['content-type']);
+    mysqli_stmt_execute($stmt);
+    $new_post_id = mysqli_insert_id($con);
 
-     $tags =  explode (' ', $post_data['post-tag']);
+   $tags =  explode (' ', $post_data['post-tag']);
 
-     foreach ($tags as $tag_name) {
-     	$sql = "INSERT INTO hashtag (hashtag_name)
-                 VALUES (?)";
-      $stmt = mysqli_prepare($con, $sql);
-     	mysqli_stmt_bind_param($stmt, 's', $tag_name);
-     	mysqli_stmt_execute($stmt);
-     	$hashtag_id = mysqli_insert_id($con);
-
-     	if (!$hashtag_id) {
-     		$sql = "SELECT id
-     		        FROM hashtag
-     		        WHERE hashtag_name = ?;"; // возможно надо like
-     		$stmt = mysqli_prepare($con, $sql);
-     		mysqli_stmt_bind_param($stmt, 's', $tag_name);
-     		mysqli_stmt_execute($stmt);
-     		$res = mysqli_stmt_get_result($stmt);
-      		$hashtag_id = mysqli_fetch_row($res);
-     	}
-
-     	$sql = "INSERT INTO tag_in_post (tag_id, post_id)
-                     VALUES ( ?, ?);";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, 'ii', $hashtag_id, $new_post_id);
-        mysqli_stmt_execute($stmt);
-     }
-     header("Location: post.php?post_id=" . $new_post_id);
+  foreach ($tags as $tag_name) {
+    add_hashtag($tag_name, $con, $new_post_id);
   }
+
+  header("Location: post.php?post_id=" . $new_post_id);
+  exit();
 
 } else {
   $page_content = include_template('post_add.php', ['content_type' => $content_types, 'active_form_type' => $active_form_type, 'errors' => $errors]);
