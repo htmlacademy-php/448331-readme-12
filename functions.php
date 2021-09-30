@@ -124,4 +124,59 @@ function add_hashtag ($tag_name, $con, $new_post_id) {
     mysqli_stmt_bind_param($stmt, 'ii', $hashtag_id, $new_post_id);
     mysqli_stmt_execute($stmt);
 }
+
+function registration_email_validation ($email, $con) {
+    if (empty($email)) {
+        return 'Поле должно быть заполнено';
+    }
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $sql = "SELECT id
+                FROM user
+                WHERE email = ?;";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $email);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_num_rows($res) > 0) {
+            return 'Пользователь с этим email уже зарегистрирован';
+        }
+    } else {
+        return 'Вы ввели некорректный e-mail адрес';
+    }
+    return null;
+}
+
+function registration_login_validation ($login, $con) {
+    if (!empty($login)) {
+        $sql = "SELECT id
+                FROM user
+                WHERE login = ?;";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $login);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $login_id = mysqli_fetch_row($res);
+
+        if ($login_id) {
+        return 'Пользователь с этим именем уже зарегистрирован';
+        }
+    return null;
+    } else {
+        return 'Поле с именем пользователя должно быть заполнено';
+    }
+}
+
+function registration_password_validation ($password) {
+    if (!empty($password) && !empty($_POST['password-repeat'])) {
+        if ($password !== $_POST['password-repeat']) {
+            return 'Пароли не совпадают';
+        } else {
+            return null;
+        }
+    } else {
+        return 'Оба поля с паролем должны быть заполнены';
+    }
+}
+
 ?>
