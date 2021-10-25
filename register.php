@@ -4,6 +4,7 @@ require_once('functions.php');
 date_default_timezone_set("Europe/Moscow");
 setlocale(LC_ALL, 'ru_RU');
 
+const ALLOWED_MIME_IMAGE_TYPES = ['image/gif', 'image/jpeg', 'image/png'];
 $con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
 mysqli_set_charset($con, "utf8");
 
@@ -12,7 +13,6 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отправлена, а не первый раз открываем страницу
 	$new_user_data = $_POST;
-	define ('ALLOWED_MIME_IMAGE_TYPES', ['image/gif', 'image/jpeg', 'image/png']);
 	$rules = [                                            
 	  'email' => function($value, $con) {
 	      return registration_email_validation($value, $con);
@@ -51,18 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
     print($page_content);
     exit();
 
-  } else {
-  	  $password = password_hash($new_user_data['password'], PASSWORD_DEFAULT);
-	  $sql_user_add_query = "INSERT INTO user (registration_date, email, login, password, avatar)
-	                         VALUES (NOW(), ?, ?, ?, ?)";
-	  $stmt = mysqli_prepare($con, $sql_user_add_query);
-	  mysqli_stmt_bind_param($stmt, 'ssss', $new_user_data['email'], $new_user_data['login'], $password, $new_user_data['avatar']);
-	  $res = mysqli_stmt_execute($stmt);
-	  if ($res && empty($errors)) {
-	  header("Location: index.php");
-	  exit();
   }
-  }                  
+
+  $password = password_hash($new_user_data['password'], PASSWORD_DEFAULT);
+  $sql_user_add_query = "INSERT INTO user (registration_date, email, login, password, avatar)
+                         VALUES (NOW(), ?, ?, ?, ?)";
+  $stmt = mysqli_prepare($con, $sql_user_add_query);
+  mysqli_stmt_bind_param($stmt, 'ssss', $new_user_data['email'], $new_user_data['login'], $password, $new_user_data['avatar']);
+  $res = mysqli_stmt_execute($stmt);
+  if ($res && empty($errors)) {
+  header("Location: index.php");
+  exit();
+  }
+                 
 
 }
 

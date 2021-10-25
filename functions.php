@@ -129,7 +129,9 @@ function registration_email_validation ($email, $con) {
     if (empty($email)) {
         return 'Поле должно быть заполнено';
     }
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return 'Вы ввели некорректный e-mail адрес';
+    } else {
         $sql = "SELECT id
                 FROM user
                 WHERE email = ?;";
@@ -140,25 +142,23 @@ function registration_email_validation ($email, $con) {
 
         if (mysqli_num_rows($res) > 0) {
             return 'Пользователь с этим email уже зарегистрирован';
-        }
-    } else {
-        return 'Вы ввели некорректный e-mail адрес';
+    }
     }
     return null;
 }
 
 function registration_login_validation ($login, $con) {
     if (!empty($login)) {
-        $sql = "SELECT id
+        $sql = "SELECT COUNT(*)
                 FROM user
                 WHERE login = ?;";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, 's', $login);
         mysqli_stmt_execute($stmt);
         $res = mysqli_stmt_get_result($stmt);
-        $login_id = mysqli_fetch_row($res);
+        $login_exist = mysqli_fetch_row($res);
 
-        if ($login_id) {
+        if ($login_exist) {
         return 'Пользователь с этим именем уже зарегистрирован';
         }
     return null;
