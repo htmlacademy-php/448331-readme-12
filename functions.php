@@ -158,7 +158,7 @@ function registration_login_validation ($login, $con) {
         $res = mysqli_stmt_get_result($stmt);
         $login_exist = mysqli_fetch_row($res);
 
-        if ($login_exist) {
+        if ($login_exist[0]) {
         return 'Пользователь с этим именем уже зарегистрирован';
         }
     return null;
