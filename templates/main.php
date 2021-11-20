@@ -43,7 +43,7 @@ if (isset($_GET['content_id'])) {
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="<?= $a_selected_class ?> filters__button filters__button--ellipse filters__button--all filters__button--active" href="index.php">
+                        <a class="<?= $a_selected_class ?> filters__button filters__button--ellipse filters__button--all filters__button--active" href="popular.php">
                             <span>Все</span>
                         </a>
                     </li>
@@ -55,7 +55,7 @@ if (isset($_GET['content_id'])) {
                             $a_selected_class = "filters__button--active";
                         }
                         ?>
-                        <a class="<?= $a_selected_class ?> filters__button filters__button--<?= $content['class'] ?> button" href="/?content_id=<?= $content['id'] ?>">
+                        <a class="<?= $a_selected_class ?> filters__button filters__button--<?= $content['class'] ?> button" href="/popular.php?content_id=<?= $content['id'] ?>">
                             <span class="visually-hidden"><?= $content['type'] ?></span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $content['class'] ?>"></use>
