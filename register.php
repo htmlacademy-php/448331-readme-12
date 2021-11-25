@@ -1,13 +1,8 @@
 <?php
 require_once('helpers.php');
 require_once('functions.php');
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
 
 const ALLOWED_MIME_IMAGE_TYPES = ['image/gif', 'image/jpeg', 'image/png'];
-$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
-mysqli_set_charset($con, "utf8");
-
 
 $errors = [];
 

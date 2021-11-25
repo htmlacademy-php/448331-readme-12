@@ -1,16 +1,9 @@
 <?php
 
-session_start();
-
 require_once('helpers.php');
 require_once('functions.php');
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
 
-$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
-mysqli_set_charset($con, "utf8");
-
-if (isset($_SESSION['user'])) {
+if (isset($_SESSION['user_data']['id'])) {
 	// код запроса к БД на выборку релевантных постов
 	$sql = " SELECT post.id AS id, post_date, post_header, post_content, quote_author, image, video, link, content_type, login, avatar, author_id,  COUNT(comment.user_id) AS comments, COUNT(likes.post_id) AS likes
 		    FROM post 
@@ -20,7 +13,7 @@ if (isset($_SESSION['user'])) {
 		    JOIN subscription ON user.id = subscription.author_id
 		    WHERE subscriber_id = ?
 		    GROUP BY post.id;";
-		    
+
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, 'i', $_SESSION['user_data']['id']);
     mysqli_stmt_execute($stmt);
@@ -32,6 +25,7 @@ if (isset($_SESSION['user'])) {
 	print($layout_content);
 } else {
 	header("Location: /");
+	die();
 }
 
 

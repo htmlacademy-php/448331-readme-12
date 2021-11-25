@@ -1,11 +1,7 @@
 <?php
+
 require_once('helpers.php');
 require_once('functions.php');
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
-
-$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
-mysqli_set_charset($con, "utf8");
 
 $sql_content_types_select = "SELECT id, type AS post_type, class AS post_class
                              FROM content_type;";

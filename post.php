@@ -1,10 +1,6 @@
 <?php
-require_once('helpers.php');
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
 
-$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
-mysqli_set_charset($con, "utf8");
+require_once('helpers.php');
 
 $post_exists = 0;
 if (is_numeric($_GET['post_id'])) {

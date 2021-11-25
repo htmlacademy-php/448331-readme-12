@@ -1,4 +1,13 @@
 <?php
+
+session_start();
+
+date_default_timezone_set("Europe/Moscow");
+setlocale(LC_ALL, 'ru_RU');
+
+$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
+mysqli_set_charset($con, "utf8");
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
