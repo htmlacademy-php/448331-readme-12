@@ -1,90 +1,49 @@
 <?php
+
 require_once('helpers.php');
-$is_auth = rand(0, 1);
 
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
+if (!isset($_SESSION['user'])) {
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
+		$authentication_data = $_POST;
+		$errors = [];
+		$required = ['login', 'password'];
 
-$con = mysqli_connect("localhost", "mysql", "mysql", "readme", 3306);
-mysqli_set_charset($con, "utf8");
+		foreach ($required as $field) {
+		    if (empty($authentication_data[$field])) {
+		        $errors[$field] = 'Это поле необходимо заполнить';
+	        }
+   		}
+   		if (empty($errors)) {
+   			$sql = "SELECT id, login, password, avatar
+   				    FROM user
+   				    WHERE login = ?
+   				    LIMIT 1;";
+   			$stmt = mysqli_prepare($con, $sql);
+   			mysqli_stmt_bind_param($stmt, 's', $authentication_data['login']);
+   			mysqli_stmt_execute($stmt);
+   			$res = mysqli_stmt_get_result($stmt);
+   			$user_data = mysqli_fetch_array($res, MYSQLI_ASSOC);
+   			if (empty($user_data['password'])) {
+   				$errors['login'] = 'Вы ввели неверное имя пользователя или пароль.';
+   			} elseif (password_verify($authentication_data['password'], $user_data['password'])) {
+   				$_SESSION['user'] = $authentication_data['login'];
+   				$_SESSION['user_data'] = $user_data;
+   				header("Location: feed.php");
+   				exit();
+   			} else {
+   				$errors['password'] = 'Вы ввели неверное имя пользователя или пароль';
+   			}
+   		}
+	} else {
+		$page_content = include_template('login.php', ['errors' => $errors]);
+		print($page_content);	
+	}
 
-$content_type_filter = "";
-if (is_numeric($_GET['content_id'])) {
-    $content_type_filter = "WHERE content_type.id = ?";
-} 
-
-$sql_posts_select = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id
-                    FROM post
-                    JOIN user ON post.user_id = user.id
-                    JOIN content_type ON post.content_type = content_type.id
-                    $content_type_filter
-                    ORDER BY view_count;";
-
-$stmt = mysqli_prepare($con, $sql_posts_select);
-
-if ($content_type_filter) {
-	mysqli_stmt_bind_param($stmt, 'i', $_GET['content_id']);
+} else {
+	header("Location: feed.php");
+	exit();
 }
 
 
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$posts_array = mysqli_fetch_all($res,  MYSQLI_ASSOC);
-
-$sql_content_types_select = "SELECT type, class, id
-                             FROM content_type;";
-$sql_array = mysqli_query($con, $sql_content_types_select);
-$content_types = mysqli_fetch_all($sql_array,  MYSQLI_ASSOC);
-
-
-$user_name = 'Андрей'; // укажите здесь ваше имя
-
-function post_date_ago(string $input_date) {
-    $post_date_obj = date_create($input_date);
-    $current_date = date_create("now");
-    $date_interval = date_diff($current_date, $post_date_obj);
-    $date_diff_unix = strtotime(date_interval_format($date_interval, '%Y-%M-%D %H:%I'));
-    define("WEEK", '7');
-    switch (true) {
-        case ($date_diff_unix < strtotime('00-00-00 01:00')):
-            $posted_time_ago = date_interval_format($date_interval, '%i');
-            $plural_form = get_noun_plural_form($posted_time_ago, 'минута', 'минуты', 'минут');
-            break;
-        case ($date_diff_unix < strtotime('00-00-01 00:00')):
-            $posted_time_ago = date_interval_format($date_interval, '%h'); 
-            $plural_form = get_noun_plural_form($posted_time_ago, 'час', 'часа', 'часов');
-            break;
-        case ($date_diff_unix < strtotime('00-00-07 00:00')):
-            $posted_time_ago = date_interval_format($date_interval, '%d'); 
-            $plural_form = get_noun_plural_form($posted_time_ago, 'день', 'дня', 'дней');
-            break;
-        case ($date_diff_unix < strtotime('00-01-00 00:00')):
-            $posted_time_ago = ceil(date_interval_format($date_interval, '%a') / WEEK); 
-            $plural_form = get_noun_plural_form($posted_time_ago, 'неделя', 'недели', 'недель');
-            break;
-        default:
-            $posted_time_ago = date_interval_format($date_interval, '%m'); 
-            $plural_form = get_noun_plural_form($posted_time_ago, 'месяц', 'месяца', 'месяцев');
-            break;
-    }
-    return "$posted_time_ago"." $plural_form"." назад";
-}
-
-function string_reduce(string $string_to_cut, int $string_length = 300) {
-    if (mb_strlen($string_to_cut) <= $string_length) {
-        return $string_to_cut;
-    }
-    $article_array = explode(' ', $string_to_cut); // разбиваем строку на массив слов
-    $i = 0;
-    while (mb_strlen($resulted_string) < $string_length) {
-        $resulted_string .= ' '.$article_array[$i];
-        $i++;
-    }
-    return $resulted_string.'...';
-}
-
-$page_content = include_template('main.php', ['posts_array' => $posts_array, 'content_types' => $content_types]);
-$layout_content = include_template('layout.php', ['page_content' => $page_content, 'page_title' => 'readme: популярное']);
-print($layout_content);
 
 ?>
