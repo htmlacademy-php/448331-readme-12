@@ -85,3 +85,4 @@ CREATE TABLE tag_in_post (
 	FOREIGN KEY (post_id) REFERENCES post(id)
 )
 
+CREATE FULLTEXT INDEX post_fulltext_search ON post(post_header, post_content);
