@@ -8,7 +8,7 @@ if (isset($_SESSION['user'])) {
 	if (isset($_GET['search_query'])) {
 
 		$query = trim($_GET['search_query']);
-		$original_query = $query;
+		$original_query = htmlentities($query);
 
 		if (substr($query, 0,1) == '#') {
 			$query = substr($query, 1);
@@ -24,7 +24,7 @@ if (isset($_SESSION['user'])) {
 				    WHERE hashtag_name = ?
 				    GROUP BY post.id
 				    ORDER BY post_date;";
-		} elseif ($query != "") {
+		} elseif (!empty($query)) {
 			$sql = "SELECT post.id AS id, post_date, post_header, post_content, quote_author, image, video, link, content_type, login, avatar, author_id,  COUNT(comment.user_id) AS comments, COUNT(likes.post_id) AS likes
 				    FROM post 
 				    LEFT JOIN comment ON comment.post_id = post.id
