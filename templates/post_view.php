@@ -114,21 +114,21 @@
           <?= $inner_content ?>
           <div class="post__indicators">
             <div class="post__buttons">
-              <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+              <a class="post__indicator post__indicator--likes button" href="like.php?post_id=<?= $post_content['id'] ?>" title="Лайк">
                 <svg class="post__indicator-icon" width="20" height="17">
                   <use xlink:href="#icon-heart"></use>
                 </svg>
                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                   <use xlink:href="#icon-heart-active"></use>
                 </svg>
-                <span>250</span>
+                <span><?= $post_content['likes_amount'] ?></span>
                 <span class="visually-hidden">количество лайков</span>
               </a>
               <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
                 <svg class="post__indicator-icon" width="19" height="17">
                   <use xlink:href="#icon-comment"></use>
                 </svg>
-                <span>25</span>
+                <span><?= $post_content['comments_amount'] ?></span>
                 <span class="visually-hidden">количество комментариев</span>
               </a>
               <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
@@ -139,69 +139,58 @@
                 <span class="visually-hidden">количество репостов</span>
               </a>
             </div>
-            <span class="post__view">500 просмотров</span>
+            <span class="post__view"><?= $post_content['view_count'] ?></span>
           </div>
+
           <div class="comments">
-            <form class="comments__form form" action="#" method="post">
+            <form class="comments__form form" action="add_comment.php" method="post">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="img/userpic-medium.jpg" alt="Аватар пользователя">
+                <img class="comments__picture" src="img/<?= $_SESSION['user_data']['avatar'] ?>" alt="Аватар пользователя">
               </div>
-              <div class="form__input-section form__input-section--error">
-                <textarea class="comments__textarea form__textarea form__input" placeholder="Ваш комментарий"></textarea>
+              <?php $classname = !empty($_SESSION['post_comment_error']) ? "form__input-section--error" : ""; ?>
+              <div class="form__input-section <?= $classname ?>">
+                <textarea class="comments__textarea form__textarea form__input" placeholder="Ваш комментарий" name="comment_text"></textarea>
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
                 <div class="form__error-text">
                   <h3 class="form__error-title">Ошибка валидации</h3>
-                  <p class="form__error-desc">Это поле обязательно к заполнению</p>
+                  <p class="form__error-desc"><?= $_SESSION['post_comment_error']?></p>
                 </div>
               </div>
+              <?php $_SESSION['post_comment_error'] = "" ?>
+              <input type="hidden" name="post_id" value="<?= $post_content['id'] ?>">
               <button class="comments__submit button button--green" type="submit">Отправить</button>
             </form>
             <div class="comments__list-wrapper">
               <ul class="comments__list">
+                <?php foreach ($post_content['comments'] as $key => $comment_data): ?>
                 <li class="comments__item user">
                   <div class="comments__avatar">
-                    <a class="user__avatar-link" href="#">
-                      <img class="comments__picture" src="img/userpic-larisa.jpg" alt="Аватар пользователя">
+                    <a class="user__avatar-link" href="profile.php?user_id=<?= $comment_data['id'] ?>">
+                      <img class="comments__picture" src="img/<?= $comment_data['avatar'] ?>" alt="Аватар пользователя">
                     </a>
                   </div>
                   <div class="comments__info">
                     <div class="comments__name-wrapper">
-                      <a class="comments__user-name" href="#">
-                        <span>Лариса Роговая</span>
+                      <a class="comments__user-name" href="profile.php?user_id=<?= $comment_data['id'] ?>">
+                        <span><?= $comment_data['login'] ?></span>
                       </a>
-                      <time class="comments__time" datetime="2019-03-20">1 ч назад</time>
+                      <time class="comments__time" datetime="<?= $comment_data['comment_date'] ?>"><?= post_date_ago($comment_data['comment_date']) ?></time>
                     </div>
                     <p class="comments__text">
-                      Красота!!!1!
+                      <?= $comment_data['comment'] ?>
                     </p>
                   </div>
                 </li>
-                <li class="comments__item user">
-                  <div class="comments__avatar">
-                    <a class="user__avatar-link" href="#">
-                      <img class="comments__picture" src="img/userpic-larisa.jpg" alt="Аватар пользователя">
-                    </a>
-                  </div>
-                  <div class="comments__info">
-                    <div class="comments__name-wrapper">
-                      <a class="comments__user-name" href="#">
-                        <span>Лариса Роговая</span>
-                      </a>
-                      <time class="comments__time" datetime="2019-03-18">2 дня назад</time>
-                    </div>
-                    <p class="comments__text">
-                      Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы. Байкал считается самым глубоким озером в мире. Он окружен сетью пешеходных маршрутов, называемых Большой байкальской тропой. Деревня Листвянка, расположенная на западном берегу озера, – популярная отправная точка для летних экскурсий. Зимой здесь можно кататься на коньках и собачьих упряжках.
-                    </p>
-                  </div>
-                </li>
+                <?php endforeach; ?>
               </ul>
               <a class="comments__more-link" href="#">
                 <span>Показать все комментарии</span>
-                <sup class="comments__amount">45</sup>
+                <sup class="comments__amount"><?= count($post_content['comments']) ?></sup>
               </a>
             </div>
           </div>
+          
         </div>
         <div class="post-details__user user">
           <div class="post-details__user-info user__info">
@@ -220,11 +209,11 @@
           <div class="post-details__rating user__rating">
             <p class="post-details__rating-item user__rating-item user__rating-item--subscribers">
               <span class="post-details__rating-amount user__rating-amount"><?= $subscribers_amount[0] ?></span>
-              <span class="post-details__rating-text user__rating-text">подписчиков</span>
+              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($subscribers_amount[0], 'подписчик', 'подписчика', 'подписчиков') ?></span>
             </p>
             <p class="post-details__rating-item user__rating-item user__rating-item--publications">
               <span class="post-details__rating-amount user__rating-amount"><?= $publications_amount[0] ?></span>
-              <span class="post-details__rating-text user__rating-text">публикаций</span>
+              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($publications_amount[0], 'публикация', 'публикации', 'публикаций') ?></span>
             </p>
           </div>
           <div class="post-details__user-buttons user__buttons">

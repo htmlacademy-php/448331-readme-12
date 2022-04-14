@@ -1,15 +1,19 @@
 <?php
 
 require_once('helpers.php');
+require_once('functions.php');
 
 $post_exists = 0;
 if (is_numeric($_GET['post_id'])) {
   $post_id = $_GET['post_id'];
-  $sql_post_content = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id, user_id
+  $sql_post_content = "SELECT post_header AS header, class AS type, post_content AS content, login AS user_name, avatar, post_date, link, image, post.id, post.user_id AS user_id, COUNT(likes.post_id) AS likes_amount, COUNT(comment.id) AS comments_amount, post.view_count AS view_count
                         FROM post
                         JOIN user ON post.user_id = user.id
+                        LEFT JOIN likes ON post.id = likes.post_id
+                        LEFT JOIN comment ON post.id = comment.post_id
                         JOIN content_type ON post.content_type = content_type.id
-                        WHERE post.id = ?";
+                        WHERE post.id = ?
+                        GROUP BY post.id;";
 
   $stmt = mysqli_prepare($con, $sql_post_content);// пробная часть с подготовленными выражениями
   mysqli_stmt_bind_param($stmt, 'i', $post_id);
@@ -23,6 +27,7 @@ if (!$post_exists) {
   exit;
 } else {
   $post_content_array = mysqli_fetch_assoc($res);
+  $post_content_array['comments'] = post_comments_list($post_content_array['id'], $con);
   $user_id = $post_content_array['user_id'];
 
   $sql_subscribers_amount = "SELECT COUNT(*)

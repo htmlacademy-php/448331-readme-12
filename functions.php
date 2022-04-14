@@ -209,4 +209,44 @@ function post_date_ago(string $input_date) {
     }
     return "$posted_time_ago"." $plural_form"." назад";
 }
+
+function hashtag_list($post_id, $con) {
+    $sql = "SELECT hashtag_name
+            FROM tag_in_post
+            JOIN hashtag ON tag_in_post.tag_id = hashtag.id
+            WHERE tag_in_post.post_id = ?;";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $post_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $linked_tags = mysqli_fetch_all($res, MYSQLI_NUM);
+    return $linked_tags;
+}
+
+function post_comments_list($post_id, $con) {
+    $sql = "SELECT comment.comment_content AS comment, comment_date, avatar, login, user.id AS id
+            FROM comment
+            JOIN post ON comment.post_id = post.id
+            JOIN user ON comment.user_id = user.id
+            WHERE comment.post_id = ?;";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $post_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $comments_list = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $comments_list;
+}
+
+function string_reduce(string $string_to_cut, int $string_length = 300) {
+    if (mb_strlen($string_to_cut) <= $string_length) {
+        return $string_to_cut;
+    }
+    $article_array = explode(' ', $string_to_cut); // разбиваем строку на массив слов
+    $i = 0;
+    while (mb_strlen($resulted_string) < $string_length) {
+        $resulted_string .= ' '.$article_array[$i];
+        $i++;
+    }
+    return $resulted_string.'...';
+}
 ?>

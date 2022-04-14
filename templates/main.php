@@ -76,7 +76,7 @@ if (isset($_GET['content_id'])) {
             ?>
             <article class="popular__post post <?= "post-".$post_content['type'] ?>">
                 <header class="post__header">
-                    <h2><?= '<a href="post.php?post_id='.$post_content['id'].'">'.htmlspecialchars($post_content['header']).'</a>' ?></h2>
+                    <h2><?= '<a href="post.php?post_id='.$post_content['post_id'].'">'.htmlspecialchars($post_content['header']).'</a>' ?></h2>
                 </header>
                 <div class="post__main">
                     <!--здесь содержимое карточки-->
@@ -132,9 +132,8 @@ if (isset($_GET['content_id'])) {
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
-                        <a class="post__author-link" href="#" title="Автор">
+                        <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                             <div class="post__avatar-wrapper">
-                                <!--укажите путь к файлу аватара-->
                                 <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
@@ -145,21 +144,21 @@ if (isset($_GET['content_id'])) {
                     </div>
                     <div class="post__indicators">
                         <div class="post__buttons">
-                            <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                            <a class="post__indicator post__indicator--likes button" href="like.php?post_id=<?= $post_content['post_id'] ?>" title="Лайк">
                                 <svg class="post__indicator-icon" width="20" height="17">
                                     <use xlink:href="#icon-heart"></use>
                                 </svg>
                                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                     <use xlink:href="#icon-heart-active"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post_content['likes_amount'] ?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
                             <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                     <use xlink:href="#icon-comment"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post_content['comments_amount'] ?></span>
                                 <span class="visually-hidden">количество комментариев</span>
                             </a>
                         </div>
@@ -168,4 +167,11 @@ if (isset($_GET['content_id'])) {
             </article>
             <?php endforeach; ?>
         </div>
+        <?= var_dump($pages_amount) ?>
+        <?php if ($pages_amount > 1): ?>
+        <div class="popular__page-links">
+            <a class="popular__page-link popular__page-link--prev button button--gray" href="<?= $this_page_link ?>page=<?= ($current_page - 1) ?>">Предыдущая страница</a>
+            <a class="popular__page-link popular__page-link--next button button--gray" href="<?= $this_page_link ?>page=<?= (($current_page + 1) > $pages_amount) ? $pages_amount : ($current_page + 1) ?>">Следующая страница</a>
+        </div>
+        <?php endif; ?>
     </div>
