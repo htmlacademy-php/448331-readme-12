@@ -21,8 +21,7 @@ if (isset($_SESSION['user']) && isset($_GET['post_id'])) {
  		$stmt = mysqli_prepare($con, $sql);
 	 	mysqli_stmt_bind_param($stmt, 'ii', $_SESSION['user_data']['id'], $_GET['post_id']);
 	 	mysqli_stmt_execute($stmt);
-
-	 	$refering_page = $_SERVER['HTTP_REFERER'];	
+	 	$refering_page = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "index.php";
 		header("Location: $refering_page");
 		exit();
 

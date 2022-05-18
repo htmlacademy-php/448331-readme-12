@@ -3,11 +3,12 @@
 require_once('helpers.php');
 require_once('functions.php');
 
+const ITEMS_PER_PAGE = 6;
+
 if (isset($_SESSION['user'])) {
 
-    $current_page = ($_GET['page'] >= 1) ? $_GET['page'] : 1;
-    $items_per_page = 6;
-    $items_offset = ($current_page - 1) * $items_per_page;
+    $current_page = ($_GET['page'] >= 1) ? (int) $_GET['page'] : 1;
+    $items_offset = ($current_page - 1) * ITEMS_PER_PAGE;
 
     $content_type_filter = "";
     if (is_numeric($_GET['content_id'])) {
@@ -30,8 +31,8 @@ if (isset($_SESSION['user'])) {
                         $content_type_filter
                         GROUP BY post.id
                         ORDER BY view_count
-                        LIMIT ?
-                        OFFSET ?;";
+                        LIMIT " . ITEMS_PER_PAGE .
+                        " OFFSET ?;";
 
     $stmt = mysqli_prepare($con, $sql_posts_select);
     
@@ -41,9 +42,9 @@ if (isset($_SESSION['user'])) {
         mysqli_stmt_execute($stmt_posts_count);
         $res = mysqli_stmt_get_result($stmt_posts_count);
         $posts_amount = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    	mysqli_stmt_bind_param($stmt, 'iii', $_GET['content_id'], $items_per_page, $items_offset);
+    	mysqli_stmt_bind_param($stmt, 'ii', $_GET['content_id'], $items_offset);
     } else {
-        mysqli_stmt_bind_param($stmt, 'ii', $items_per_page, $items_offset);
+        mysqli_stmt_bind_param($stmt, 'i', $items_offset);
         $posts_amount = mysqli_query($con, $sql_posts_amount_count); //запрос без подстановки внешних параметров
         $posts_amount = mysqli_fetch_all($posts_amount, MYSQLI_ASSOC);
     }
@@ -53,7 +54,7 @@ if (isset($_SESSION['user'])) {
     $posts_array = mysqli_fetch_all($res,  MYSQLI_ASSOC);
 
 
-    $pages_amount = ceil($posts_amount[0]['posts_count'] / $items_per_page);
+    $pages_amount = ceil($posts_amount[0]['posts_count'] / ITEMS_PER_PAGE);
     $pages_amount = ($pages_amount > 1) ? $pages_amount : 1;
 
     $sql_content_types_select = "SELECT type, class, id
