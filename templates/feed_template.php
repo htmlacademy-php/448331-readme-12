@@ -13,7 +13,7 @@
                 <?php if ($post_content['content_type'] == 3): ?>
                 <article class="feed__post post post-photo">
                   <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                       <div class="post__avatar-wrapper">
                         <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя" width="60" height="60">
                       </div>
@@ -29,42 +29,13 @@
                       <img src="img/<?= $post_content['image'] ?>" alt="Фото от пользователя" width="760" height="396">
                     </div>
                   </div>
-                  <footer class="post__footer post__indicators">
-                    <div class="post__buttons">
-                      <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                        <svg class="post__indicator-icon" width="20" height="17">
-                          <use xlink:href="#icon-heart"></use>
-                        </svg>
-                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                          <use xlink:href="#icon-heart-active"></use>
-                        </svg>
-                        <span><?= $post_content['likes'] ?></span>
-                        <span class="visually-hidden">количество лайков</span>
-                      </a>
-                      <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-comment"></use>
-                        </svg>
-                        <span><?= $post_content['comments'] ?></span>
-                        <span class="visually-hidden">количество комментариев</span>
-                      </a>
-                      <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-repost"></use>
-                        </svg>
-                        <span>5</span>
-                        <span class="visually-hidden">количество репостов</span>
-                      </a>
-                    </div>
-                  </footer>
-                </article>
 
                 <?php elseif ($post_content['content_type'] == 1): ?>
                 <article class="feed__post post post-text">
                   <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                       <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя">
+                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя" width="60" height="60">
                       </div>
                       <div class="post__info">
                         <b class="post__author-name"><?= $post_content['login'] ?></b>
@@ -79,42 +50,13 @@
                     </p>
                     <a class="post-text__more-link" href="#">Читать далее</a>
                   </div>
-                  <footer class="post__footer post__indicators">
-                    <div class="post__buttons">
-                      <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                        <svg class="post__indicator-icon" width="20" height="17">
-                          <use xlink:href="#icon-heart"></use>
-                        </svg>
-                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                          <use xlink:href="#icon-heart-active"></use>
-                        </svg>
-                        <span><?= $post_content['likes'] ?></span>
-                        <span class="visually-hidden">количество лайков</span>
-                      </a>
-                      <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-comment"></use>
-                        </svg>
-                        <span><?= $post_content['comments'] ?></span>
-                        <span class="visually-hidden">количество комментариев</span>
-                      </a>
-                      <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-repost"></use>
-                        </svg>
-                        <span>5</span>
-                        <span class="visually-hidden">количество репостов</span>
-                      </a>
-                    </div>
-                  </footer>
-                </article>
 
                 <?php elseif ($post_content['content_type'] == 4): ?>
                 <article class="feed__post post post-video">
                   <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                       <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя">
+                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя" width="60" height="60">
                       </div>
                       <div class="post__info">
                         <b class="post__author-name"><?= $post_content['login'] ?></b>
@@ -146,42 +88,13 @@
                       </button>
                     </div>
                   </div>
-                  <footer class="post__footer post__indicators">
-                    <div class="post__buttons">
-                      <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                        <svg class="post__indicator-icon" width="20" height="17">
-                          <use xlink:href="#icon-heart"></use>
-                        </svg>
-                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                          <use xlink:href="#icon-heart-active"></use>
-                        </svg>
-                        <span><?= $post_content['likes'] ?></span>
-                        <span class="visually-hidden">количество лайков</span>
-                      </a>
-                      <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-comment"></use>
-                        </svg>
-                        <span><?= $post_content['comments'] ?></span>
-                        <span class="visually-hidden">количество комментариев</span>
-                      </a>
-                      <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-repost"></use>
-                        </svg>
-                        <span>5</span>
-                        <span class="visually-hidden">количество репостов</span>
-                      </a>
-                    </div>
-                  </footer>
-                </article>
 
                 <?php elseif ($post_content['content_type'] == 2): ?>
                 <article class="feed__post post post-quote">
                   <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                       <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя">
+                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя" width="60" height="60">
                       </div>
                       <div class="post__info">
                         <b class="post__author-name"><?= $post_content['login'] ?></b>
@@ -197,42 +110,13 @@
                       <cite><?= $post_content['quite_author'] ?></cite>
                     </blockquote>
                   </div>
-                  <footer class="post__footer post__indicators">
-                    <div class="post__buttons">
-                      <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                        <svg class="post__indicator-icon" width="20" height="17">
-                          <use xlink:href="#icon-heart"></use>
-                        </svg>
-                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                          <use xlink:href="#icon-heart-active"></use>
-                        </svg>
-                        <span><?= $post_content['likes'] ?></span>
-                        <span class="visually-hidden">количество лайков</span>
-                      </a>
-                      <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-comment"></use>
-                        </svg>
-                        <span><?= $post_content['comments'] ?></span>
-                        <span class="visually-hidden">количество комментариев</span>
-                      </a>
-                      <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                          <use xlink:href="#icon-repost"></use>
-                        </svg>
-                        <span>5</span>
-                        <span class="visually-hidden">количество репостов</span>
-                      </a>
-                    </div>
-                  </footer>
-                </article>
 
                 <?php elseif ($post_content['content_type'] == 5): ?>
                 <article class="feed__post post post-link">
                   <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?user_id=<?= $post_content['author_id'] ?>" title="Автор">
                       <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя">
+                        <img class="post__author-avatar" src="img/<?= $post_content['avatar'] ?>" alt="Аватар пользователя" width="60" height="60">
                       </div>
                       <div class="post__info">
                         <b class="post__author-name"><?= $post_content['login'] ?></b>
@@ -257,9 +141,11 @@
                       </a>
                     </div>
                   </div>
+
+                <?php endif; ?>
                   <footer class="post__footer post__indicators">
                     <div class="post__buttons">
-                      <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                      <a class="post__indicator post__indicator--likes button" href="like.php?post_id=<?= $post_content['id'] ?>" title="Лайк">
                         <svg class="post__indicator-icon" width="20" height="17">
                           <use xlink:href="#icon-heart"></use>
                         </svg>
@@ -286,8 +172,8 @@
                     </div>
                   </footer>
                 </article>
-                <?php endif; ?>
               <?php endforeach; ?>
+
             </div>
           </div>
           <ul class="feed__filters filters">
