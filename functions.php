@@ -249,4 +249,21 @@ function string_reduce(string $string_to_cut, int $string_length = 300) {
     }
     return $resulted_string.'...';
 }
+
+function user_id_exists_in_db($con, int $user_id) {
+    $sql = "SELECT COUNT(*)
+            FROM user
+            WHERE id = ?;";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $user_exists = mysqli_fetch_row($res);
+
+    if ($user_exists[0]) {
+        return true;
+    }
+    return false;
+}
 ?>

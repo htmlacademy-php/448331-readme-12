@@ -1,6 +1,8 @@
 <?php
 
 require_once('helpers.php');
+require_once('functions.php');
+require_once('mailer.php');
 
 if (!isset($_SESSION['user'])) {
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
@@ -9,10 +11,10 @@ if (!isset($_SESSION['user'])) {
 		$required = ['login', 'password'];
 
 		foreach ($required as $field) {
-		    if (empty($authentication_data[$field])) {
-		        $errors[$field] = 'Это поле необходимо заполнить';
-	        }
-   		}
+		   if (empty($authentication_data[$field])) {
+		       $errors[$field] = 'Это поле необходимо заполнить';
+	      }
+   	}
    		if (empty($errors)) {
    			$sql = "SELECT id, login, password, avatar
    				    FROM user
@@ -36,14 +38,13 @@ if (!isset($_SESSION['user'])) {
    		}
 	} else {
 		$page_content = include_template('login.php', ['errors' => $errors]);
-		print($page_content);	
+		print($page_content);
+      exit();	
 	}
 
-} else {
-	header("Location: feed.php");
-	exit();
 }
 
-
+header("Location: feed.php");
+exit();
 
 ?>

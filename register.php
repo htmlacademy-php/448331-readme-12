@@ -2,6 +2,7 @@
 
 require_once('helpers.php');
 require_once('functions.php');
+require_once('mailer.php');
 
 const ALLOWED_MIME_IMAGE_TYPES = ['image/gif', 'image/jpeg', 'image/png'];
 
@@ -42,11 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
     $errors = array_filter($errors);
 
   if (!empty($errors)) {      // если были ошибки, загружаем страницу и показываем ошибки
-
-    $page_content = include_template('registration.php', ['errors' => $errors]);
-    print($page_content);
-    exit();
-
+      $page_content = include_template('registration.php', ['errors' => $errors]);
+      print($page_content);
+      exit();
   }
 
   $password = password_hash($new_user_data['password'], PASSWORD_DEFAULT);
@@ -56,11 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {     // если форма отпр�
   mysqli_stmt_bind_param($stmt, 'ssss', $new_user_data['email'], $new_user_data['login'], $password, $new_user_data['avatar']);
   $res = mysqli_stmt_execute($stmt);
   if ($res && empty($errors)) {
-  header("Location: index.php");
-  exit();
-  }
-                 
-
+      header("Location: index.php");
+      exit();
+  }              
 }
 
 $page_content = include_template('registration.php', ['errors' => $errors]);

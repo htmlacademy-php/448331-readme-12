@@ -26,7 +26,7 @@
             <div class="profile__user-buttons user__buttons">
               <?php if ($is_subscribed): ?>
               <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?user_id=<?= $user_profile_data['id'] ?>&action=unsubscribe">Отписаться</a>
-              <a class="profile__user-button user__button user__button--writing button button--green" href="messages.php">Сообщение</a>
+              <a class="profile__user-button user__button user__button--writing button button--green" href="messages.php?chat_mate_id=<?= $user_profile_data['id'] ?>">Сообщение</a>
               <?php else: ?> 
               <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?user_id=<?= $user_profile_data['id'] ?>&action=subscribe">Подписаться</a>
               <?php endif; ?>       

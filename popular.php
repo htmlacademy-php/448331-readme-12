@@ -2,6 +2,7 @@
 
 require_once('helpers.php');
 require_once('functions.php');
+require_once('mailer.php');
 
 const ITEMS_PER_PAGE = 6;
 
@@ -68,9 +69,10 @@ if (isset($_SESSION['user'])) {
                                                'this_page_link' => $this_page_link]);
     $layout_content = include_template('layout.php', ['page_content' => $page_content, 'page_title' => 'readme: популярное', 'is_auth' => true]);
     print($layout_content);
-} else {
-    header("Location: /");
     die();
 }
+
+header("Location: /");
+die();
 
 ?>

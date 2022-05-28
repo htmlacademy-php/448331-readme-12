@@ -1,0 +1,10 @@
+{
+    "name": "htmlacademy/readme",
+    "description": "Study project in HTMLAcademy",
+    "type": "project",
+    "license": "none",
+    "minimum-stability": "dev",
+    "require": {
+        "symfony/mailer": "5.4.x-dev"
+    }
+}
