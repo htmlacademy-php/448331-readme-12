@@ -3,7 +3,7 @@
     "description": "Study project in HTMLAcademy",
     "type": "project",
     "license": "none",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "symfony/mailer": "5.4.x-dev"
     }

@@ -26,7 +26,7 @@ if (isset($_SESSION['user'])) {
 				mysqli_stmt_execute($stmt);
 			}
 
-			$return_page = "Location: messages.php?chat_mate_id=".$_POST['recipient_id'];
+			$return_page = "Location: messages.php?chat_mate_id=".(int) $_POST['recipient_id'];
 			header("Location: $return_page");
 			exit();
 		}
