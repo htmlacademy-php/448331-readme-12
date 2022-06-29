@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Проверяет тип загруженной фотографии
+ * @param array $value Массив с данными файла
+ *
+ * @return string Ошибку, если валидация не пройдена
+ */
 function added_photo_validation ($value) {
   if ($file_type !== 'image/gif' || $file_type !== 'image/png' || $file_type !== 'image/jpeg') {
     return 'Пожалуйста, загрузите картинку в формате Gif, PNG или JPEG';
@@ -7,6 +13,12 @@ function added_photo_validation ($value) {
   return null;
 }
 
+/**
+ * Проверяет корректность ссылки на видео
+ * @param string $value Строка с адресом ссылки
+ *
+ * @return string Ошибку, если валидация не пройдена
+ */
 function video_link_validation ($value) {
     if (empty($value)) {
         return 'Адрес ссылки на видео должен быть заполнен';
@@ -53,6 +65,12 @@ function photo_link_validation ($value) {
     return null;
 }
 
+/**
+ * Проверяет поле формы на заполненность
+ * @param string $value Данные поля формы
+ *
+ * @return string Ошибку, если поле пустое
+ */
 function not_empty_field($value) {
     if (empty($value)) {
         return 'Поле должно быть заполнено';
@@ -61,6 +79,12 @@ function not_empty_field($value) {
 }
 
 
+/**
+ * Валидация хеш тэга
+ * @param string $value Хэш тэг
+ *
+ * @return string Ошибку, если поле пустое либо хэш тег не корректен
+ */
 function validate_tags($value): ?string {             // функция валидации тегов
     if (empty($value)) {
         return 'Поле должно быть заполнено';
@@ -77,6 +101,12 @@ function validate_tags($value): ?string {             // функция вали
     return null;
 }
 
+/**
+ * Валидация хеш тэга
+ * @param string $value Хэш тэг
+ *
+ * @return string Ошибку, если поле пустое либо хэш тег не корректен
+ */
 function getPostVal($name) {
     if (isset($_POST[$name])) {
         return $_POST[$name];
@@ -85,6 +115,12 @@ function getPostVal($name) {
     }
 }
 
+/**
+ * Проверяет наличие ошибок валидации заполненного поля формы
+ * @param string $value Имя поля формы
+ *
+ * @return string Текст ошибки валидации, если она есть
+ */
 function is_error_field ($value) {
     if (empty($value)) {
         return null;
@@ -93,12 +129,27 @@ function is_error_field ($value) {
     }
 }
 
+/**
+ * Добавляет класс (делает активной) кнопку с выбранным типом добавляемого контента
+ * @param string $value1 Тип контента кнопки-фильтра
+ * @param string $value2 Тип контента поста, который добавляем
+ *
+ * @return string Класс для активной кнопки выбора типа добавляемого поста
+ */
 function is_active_form ($value1, $value2) {
     if ($value1 == $value2) {
         return 'filters__button--active tabs__item--active';
     }
 }
 
+/**
+ * Добавляет в базу данных привязанные к посту хеш теги
+ * @param string $tag_name Имя хеш тега
+ * @param string $con Ресурс соединения с базой данных
+ * @param string $new_post_id Id нового поста, к которому добавляем хеш теги
+ *
+ * @return string Класс для активной кнопки выбора типа добавляемого поста
+ */
 function add_hashtag ($tag_name, $con, $new_post_id) {
     $sql = "SELECT id
             FROM hashtag
@@ -249,4 +300,19 @@ function string_reduce(string $string_to_cut, int $string_length = 300) {
     }
     return $resulted_string.'...';
 }
+
+function user_id_exists_in_db($con, int $user_id) {
+    $sql = "SELECT COUNT(*)
+            FROM user
+            WHERE id = ?;";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $user_exists = mysqli_fetch_row($res);
+
+    return isset($user_exists[0]) && $user_exists[0] > 0;
+}
+
 ?>

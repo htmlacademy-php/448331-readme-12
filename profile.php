@@ -2,6 +2,8 @@
 
 require_once('helpers.php');
 require_once('functions.php');
+require_once('mailer.php');
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if (isset($_SESSION['user']) && isset($_GET['user_id']) && is_numeric($_GET['user_id'])) {  //проверяем залогинены или нет и есть ли ID пользователя
@@ -84,7 +86,8 @@ if (isset($_SESSION['user']) && isset($_GET['user_id']) && is_numeric($_GET['use
 	print($layout_content);
 
 } 
-	header("Location: index.php");
-  	exit();
+
+header("Location: index.php");
+exit();
 
 ?>
